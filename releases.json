@@ -4,27 +4,27 @@
     "tag": "launcher@0.2.55",
     "version": "0.2.55",
     "assets": {
-      "horizon-launcher-linux-x86_64.tar.gz": ""
+      "horizon-launcher-linux-x86_64.tar.gz": "sha256-ZsMkWsNWF0J6crNXDIx76ZK1ip2Mc3/0t7OXUBg+flA="
     }
   },
   "release": {
     "tag": "v0.2.97",
     "version": "0.2.97",
     "assets": {
-      "horizon-linux-x86_64.tar.gz": "",
-      "horizon-server-linux-x86_64.tar.gz": ""
+      "horizon-linux-x86_64.tar.gz": "sha256-FuYveprJXWvniOks1ftQpWmSbSN4UxpODqOgcze3nBE=",
+      "horizon-server-linux-x86_64.tar.gz": "sha256-V0IttGUz4HcnfvFQXcwDgF1S0V86ITIAVpEYw2xffMk="
     }
   },
   "nightly": {
     "tag": "nightly-2026-11-07",
     "version": "nightly-2026-11-07",
     "assets": {
-      "horizon-linux-x86_64.tar.gz": "",
-      "horizon-server-linux-x86_64.tar.gz": ""
+      "horizon-linux-x86_64.tar.gz": "sha256-UsFbupzHSrQHTE1VCuxr914TwhimBrkMz5a7XRgcq3w=",
+      "horizon-server-linux-x86_64.tar.gz": "sha256-esKN5NaGZjjktoH+NptYTpHxaKiuv5as8ZrScsOAYew="
     }
   },
   "icon": {
     "commit": "81403ce81cf2dd87fb14e21715aa1c04a4606e19",
-    "hash": ""
+    "hash": "sha256-/vuAihbJnOBLt3/65WFUhgOmd22419cedr7Oo0EShaE="
   }
 }
