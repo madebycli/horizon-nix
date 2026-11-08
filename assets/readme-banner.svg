@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-label="horizon-nix: Horizon for Nix and NixOS">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b1230"/>
+      <stop offset="1" stop-color="#3a1d2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="260" rx="18" fill="url(#bg)"/>
+  <path d="M0 190 Q300 150 600 175 T1200 160 V260 H0 Z" fill="#F0795A" opacity="0.18"/>
+  <circle cx="980" cy="118" r="46" fill="#F0795A" opacity="0.9"/>
+  <text x="70" y="128" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="64" font-weight="700" fill="#ffffff">horizon-nix</text>
+  <text x="72" y="176" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26" fill="#e8dff5">Horizon for Nix and NixOS: official releases and Nightlies</text>
+</svg>
