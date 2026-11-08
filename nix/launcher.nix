@@ -32,6 +32,10 @@ let
     '';
   };
 
+  # buildFHSEnv only exports /usr/lib/pkgconfig, but the libraries' .pc files sit in /usr/lib64/pkgconfig
+  # and /usr/share/pkgconfig: without these the launcher's native build finds neither ALSA nor libudev.
+  pkgConfigPath = "/usr/lib64/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig";
+
   desktopItem = pkgs.makeDesktopItem {
     name = "horizon-launcher";
     desktopName = "Horizon";
@@ -52,6 +56,7 @@ let
     _:
     horizon.audioLibraries
     ++ horizon.windowingLibraries
+    ++ horizon.buildTools
     ++ (with pkgs; [
       stdenv.cc.cc.lib
       zlib
@@ -65,18 +70,24 @@ let
 
   profile = ''
     export HORIZON_LAUNCHER_NO_SELF_UPDATE=1
+    # The menu entry the launcher writes for itself must start this wrapper, not the raw binary that
+    # only runs inside the FHS environment (a bare name is looked up on PATH, as menus do).
+    export HORIZON_LAUNCHER_DESKTOP_EXEC=horizon-launcher
+    export PKG_CONFIG_PATH=${pkgConfigPath}''${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
     export SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
   '';
 
   extraInstallCommands = ''
     mkdir -p "$out/share/applications"
     cp ${desktopItem}/share/applications/*.desktop "$out/share/applications/"
+    # Absolute path: menus do not always have the profile's bin directory on PATH.
+    sed -i "s|^Exec=.*|Exec=$out/bin/horizon-launcher|" "$out/share/applications/horizon-launcher.desktop"
     ${lib.optionalString (horizon.icon != null) ''
       install -Dm644 ${horizon.icon} "$out/share/icons/hicolor/512x512/apps/horizon.png"
     ''}
   '';
 
-  passthru = { inherit unwrapped; };
+  passthru = { inherit unwrapped pkgConfigPath; };
 
   meta = {
     description = "Horizon launcher: installs, prepares and starts Horizon (official binary in a FHS environment)";

@@ -67,6 +67,18 @@ rec {
     freetype
     dbus
   ];
+  # What the launcher's "native build" of the game needs on Linux (rust_toolchain.rs `linux_needs`): a C
+  # compiler with the C library's headers, pkg-config and the development files of ALSA and libudev.
+  # buildFHSEnv puts them at /usr/bin, /usr/include and /usr/lib/pkgconfig (PKG_CONFIG_PATH is set).
+  buildTools = with pkgs; [
+    gcc
+    binutils
+    gnumake
+    pkg-config
+    glibc.dev
+    alsa-lib.dev
+    systemd.dev
+  ];
   audioLibraries = with pkgs; [
     alsa-lib
     systemd

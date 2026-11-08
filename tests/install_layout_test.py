@@ -73,9 +73,10 @@ def main() -> int:
         subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
         subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
 
-        command = ["nix", "build", "--no-link", "--print-out-paths", "--no-write-lock-file"]
+        override = []
         if os.environ.get("HORIZON_TEST_NIXPKGS"):
-            command += ["--override-input", "nixpkgs", "path:" + os.environ["HORIZON_TEST_NIXPKGS"]]
+            override = ["--override-input", "nixpkgs", "path:" + os.environ["HORIZON_TEST_NIXPKGS"]]
+        command = ["nix", "build", "--no-link", "--print-out-paths", "--no-write-lock-file", *override]
         attrs = ["horizon-launcher", "horizon", "horizon-nightly", "horizon-server", "horizon-server-nightly"]
         result = subprocess.run(command + [f".#{a}" for a in attrs], cwd=repo, capture_output=True, text=True)
         if result.returncode:
@@ -103,6 +104,37 @@ def main() -> int:
             if run.returncode:
                 print(f"{attr}: wrapped program did not start", file=sys.stderr)
                 failed = True
+        # The launcher's native build probes `cc`, the C headers, pkg-config, ALSA and libudev
+        # (launcher/src/rust_toolchain.rs, `linux_needs`). Run the same probes with the programs and the
+        # PKG_CONFIG_PATH of the FHS environment's root file system.
+        requisites = subprocess.run(["nix-store", "--query", "--requisites", outputs["horizon-launcher"]],
+                                    capture_output=True, text=True, check=True).stdout.split()
+        rootfs = next((Path(p) for p in requisites if p.endswith("-fhsenv-rootfs")), None)
+        pkg_config_path = subprocess.run(
+            ["nix", "eval", "--raw", "--no-write-lock-file", *override, ".#horizon-launcher.pkgConfigPath"],
+            cwd=repo, capture_output=True, text=True).stdout.strip()
+        if rootfs is None or not pkg_config_path:
+            print("horizon-launcher: FHS root file system or pkgConfigPath not found", file=sys.stderr)
+            failed = True
+        else:
+            env = dict(os.environ, PKG_CONFIG_PATH=":".join(str(rootfs) + p for p in pkg_config_path.split(":")))
+            bin_dir = rootfs / "usr/bin"
+            probes = [
+                ([bin_dir / "cc", "--version"], "a C compiler (cc)"),
+                ([bin_dir / "cc", "-fsyntax-only", "-x", "c", "-include", "stdint.h", "/dev/null"], "the C library's headers"),
+                ([bin_dir / "pkg-config", "--version"], "pkg-config"),
+                ([bin_dir / "pkg-config", "--exists", "alsa"], "ALSA's development files"),
+                ([bin_dir / "pkg-config", "--exists", "libudev"], "libudev's development files"),
+            ]
+            for probe, what in probes:
+                if subprocess.run([str(x) for x in probe], env=env, capture_output=True).returncode:
+                    print(f"horizon-launcher FHS environment lacks {what}", file=sys.stderr)
+                    failed = True
+        desktop = Path(outputs["horizon-launcher"]) / "share/applications/horizon-launcher.desktop"
+        exec_line = next((line for line in desktop.read_text().splitlines() if line.startswith("Exec=")), "")
+        if exec_line != f"Exec={outputs['horizon-launcher']}/bin/horizon-launcher":
+            print(f"horizon-launcher.desktop has an unexpected {exec_line!r}", file=sys.stderr)
+            failed = True
         print("OK" if not failed else "FAILED")
         return 1 if failed else 0
 
