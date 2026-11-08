@@ -66,14 +66,9 @@ Overlay: `nixpkgs.overlays = [ inputs.horizon-nix.overlays.default ];` adds `hor
 
 `releases.json` holds, per channel, the tag and the SHA-256 of each archive. `scripts/update.py` fills it from the release's own `SHA256SUMS` **after** its Ed25519 signature verified against Horizon's pinned release key; it does not download the archives. A key rotation or a missing signature stops the update instead of weakening it.
 
-**First run.** The pins start empty (the sandbox this repository was written in could not reach GitHub's release files). Until they are filled, building a package stops with an explanatory message and `nix flake check` only runs the metadata check. Fill them once:
+The pins are kept up to date by GitHub Actions: **Update upstream release** runs daily at about 04:07 Berlin time (and on demand under Actions → Run workflow). It resolves the newest releases, verifies the signatures, runs the flake checks and builds the packages, and only then commits `releases.json` to `main`, like the other `*-nix` repositories. A fresh checkout with empty hashes builds nothing and says so (the unpinned placeholder fails with an explanation).
 
-```bash
-python3 scripts/update.py            # needs python3 and openssl 3
-git add releases.json && git commit -m "chore(update): pin newest Horizon releases"
-```
-
-or run **Actions → Update upstream release → Run workflow**. After that the workflow runs daily at about 04:07 Berlin time, validates (flake check and package builds) and only then commits.
+Optionally, on your own machine:
 
 ```bash
 python3 scripts/update.py --check            # exit 1 when stale or unpinned
