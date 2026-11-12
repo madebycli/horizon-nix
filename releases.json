@@ -1,10 +1,10 @@
 {
   "_comment": "Pins written by scripts/update.py from Horizon's signed SHA256SUMS. An empty hash means: not pinned yet, run python3 scripts/update.py.",
   "launcher": {
-    "tag": "launcher@0.2.59",
-    "version": "0.2.59",
+    "tag": "launcher@0.2.61",
+    "version": "0.2.61",
     "assets": {
-      "horizon-launcher-linux-x86_64.tar.gz": "sha256-2I+Qn9c+9tDaTmqCxEcke8NznSkaqbbDnmkoOe1h8NQ="
+      "horizon-launcher-linux-x86_64.tar.gz": "sha256-tfbihG3dGgdmfHF1Dq2V5Xy/sheAW9LAgrGy8K29YkA="
     }
   },
   "release": {
