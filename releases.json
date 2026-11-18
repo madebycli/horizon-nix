@@ -1,10 +1,10 @@
 {
   "_comment": "Pins written by scripts/update.py from Horizon's signed SHA256SUMS. An empty hash means: not pinned yet, run python3 scripts/update.py.",
   "launcher": {
-    "tag": "launcher@0.2.69",
-    "version": "0.2.69",
+    "tag": "launcher@0.2.78",
+    "version": "0.2.78",
     "assets": {
-      "horizon-launcher-linux-x86_64.tar.gz": "sha256-OG647FAHCszdZqTMeTQGH/So9Ifmzo4ixrnQHtFmOTs="
+      "horizon-launcher-linux-x86_64.tar.gz": "sha256-jCFVTG5sSNF/XDiU7Y7m+O8NXSmxgXcGki6cgmZ9yn4="
     }
   },
   "release": {
@@ -16,11 +16,11 @@
     }
   },
   "nightly": {
-    "tag": "nightly-2026-11-08",
-    "version": "nightly-2026-11-08",
+    "tag": "nightly-2026-11-13",
+    "version": "nightly-2026-11-13",
     "assets": {
-      "horizon-linux-x86_64.tar.gz": "sha256-2gU2JCDOhhrxy2QeATZ44SzuapcUQiRXOVC+bvdWtOM=",
-      "horizon-server-linux-x86_64.tar.gz": "sha256-1NOro+Jv24WntWxkPzzSw6ShmLC9dX5hTx798GVMddw="
+      "horizon-linux-x86_64.tar.gz": "sha256-g9NsWi+LZpDU13QR38P4V1MxkYT//nOO5fCkxVKg6r4=",
+      "horizon-server-linux-x86_64.tar.gz": "sha256-9iHjNMJU1Wv+7RbtmJUAo274KmouhO5rhhrct3TO2bU="
     }
   },
   "icon": {
